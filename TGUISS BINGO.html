@@ -118,8 +118,13 @@
         function loadImagesFromURL() {
             const params = new URLSearchParams(window.location.search);
             if (params.has("data")) {
-                originalImages = JSON.parse(decodeURIComponent(params.get("data")));
-                images = [...originalImages];
+                try {
+                    originalImages = JSON.parse(decodeURIComponent(params.get("data")));
+                    images = [...originalImages];
+                    saveImages();
+                } catch (e) {
+                    console.error("データの読み込みに失敗しました", e);
+                }
             }
         }
 
@@ -129,9 +134,13 @@
 
         function loadSavedImages() {
             const savedData = localStorage.getItem("savedImages");
-            if (savedData) {
-                originalImages = JSON.parse(savedData);
-                images = [...originalImages];
+            if (!originalImages.length && savedData) {
+                try {
+                    originalImages = JSON.parse(savedData);
+                    images = [...originalImages];
+                } catch (e) {
+                    console.error("ローカルデータの読み込みに失敗しました", e);
+                }
             }
         }
 
@@ -142,4 +151,5 @@
     </script>
 </body>
 </html>
+
 
